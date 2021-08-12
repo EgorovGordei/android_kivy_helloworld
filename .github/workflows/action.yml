@@ -36,7 +36,7 @@ jobs:
       - name: Prepare        
         run: |
              buildozer init
-             python3 buildozer_spec_changer.py
+             python3 buildozer_spec.py
              cat buildozer.spec
 
       - name: Build
