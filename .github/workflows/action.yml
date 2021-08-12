@@ -47,7 +47,8 @@ jobs:
       - name: Compile        
         run: |
              buildozer init
-             buildozer android update -v2
+             echo "DBG::1"
+             cd ~/.buildozer
              buildozer android debug deploy run
              ls
 
