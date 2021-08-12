@@ -19,7 +19,7 @@ jobs:
              git clone https://github.com/kivy/buildozer
              cd buildozer
              python setup.py build
-             pip install -e
+             pip install -e ./
              export PATH=~/.local/bin/:$PATH
              cd ../../
              buildozer init
