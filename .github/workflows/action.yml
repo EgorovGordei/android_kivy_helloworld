@@ -15,8 +15,8 @@ jobs:
              sudo apt-get remove cython
              pip3 install --upgrade pip
              pip3 install cython
-             #pip3 install cython==0.20
-             #sudo apt-get install cython
+       #      pip3 install cython==0.20
+       #      sudo apt-get install cython
 
       - name: InstallKivy        
         run: |
@@ -45,20 +45,20 @@ jobs:
         continue-on-error: true
         run: |
              echo "DBG::1"
+             ls
+             echo "DBG::2"
              python3 buildozer_license.py
              #buildozer android debug deploy run
-      - name: BetweenRuns
-        run: |
-             ls /home/runner
-             ls /home/runneradmin
-             buildozer android clean
-      - name: SecondRun
-        run: |
-             buildozer android debug deploy run
+      #- name: BetweenRuns
+      #  run: |
+      #       buildozer android clean
+      #- name: SecondRun
+      #  run: |
+      #       buildozer android debug deploy run
 
       - name: UploadArtifacts
         uses: actions/upload-artifact@v2
         with:
-          name: Distributive
+          name: bin_folder
           path: |
-            task5/bin
+            bin
