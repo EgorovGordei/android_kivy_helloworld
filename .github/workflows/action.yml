@@ -1,0 +1,23 @@
+name: GitHub Actions Build
+on: 
+  push:
+    branches: 
+      [ task5 ]
+jobs:
+  config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build        
+        run: |
+             cd task5
+             pip install kivy
+
+      - name: UploadArtifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Distributive
+          path: |
+            task5/bin
+            task5/lib
