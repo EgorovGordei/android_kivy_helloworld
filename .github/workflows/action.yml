@@ -45,16 +45,15 @@ jobs:
         continue-on-error: true
         run: |
              echo "DBG::1"
-             ls
-             echo "DBG::2"
+             ls buildozer
              python3 buildozer_license.py
              #buildozer android debug deploy run
       #- name: BetweenRuns
       #  run: |
       #       buildozer android clean
-      #- name: SecondRun
-      #  run: |
-      #       buildozer android debug deploy run
+      - name: SecondRun
+        run: |
+             buildozer android debug deploy run
 
       - name: UploadArtifacts
         uses: actions/upload-artifact@v2
