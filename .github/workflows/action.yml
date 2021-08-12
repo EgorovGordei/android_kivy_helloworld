@@ -41,13 +41,13 @@ jobs:
              python3 buildozer_log_level.py
              cat buildozer.spec
 
-      - name: FirstRun
-        continue-on-error: true
-        run: |
-             echo "DBG::1"
-             ls buildozer
-             python3 buildozer_license.py
-             #buildozer android debug deploy run
+      #- name: FirstRun
+      #  continue-on-error: true
+      #  run: |
+      #       echo "DBG::1"
+      #       ls buildozer
+      #       python3 buildozer_license.py
+      #       #buildozer android debug deploy run
       #- name: BetweenRuns
       #  run: |
       #       buildozer android clean
