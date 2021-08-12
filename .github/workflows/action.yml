@@ -20,12 +20,13 @@ jobs:
              
              echo "DBG: INSTALLING BUILDOZER GIT"
              pip install https://github.com/kivy/buildozer/archive/master.zip
-             mkdir buildozer_build
-             cd buildozer_build
              git clone https://github.com/kivy/buildozer
              cd buildozer
+             echo "DBG:1"
              python setup.py build
+             echo "DBG:2"
              pip install -e ./
+             echo "DBG:3"
              export PATH=~/.local/bin/:$PATH
              cd ../../
              
