@@ -13,7 +13,7 @@ jobs:
         run: |
              sudo pip uninstall cython
              sudo apt-get remove cython
-             sudo apat-get install cython
+             sudo apt-get install cython
              pip install kivy
              pip install buildozer
              pip install https://github.com/kivy/buildozer/archive/master.zip
