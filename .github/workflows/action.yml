@@ -23,6 +23,7 @@ jobs:
              git clone https://github.com/kivy/buildozer
              cd buildozer
              echo "DBG:1"
+             pip install setuptools
              python setup.py build
              echo "DBG:2"
              pip install -e ./
