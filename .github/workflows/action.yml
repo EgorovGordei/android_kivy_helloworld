@@ -44,6 +44,7 @@ jobs:
       - name: FirstRun
         continue-on-error: true
         run: |
+             echo "DBG::1"
              python3 buildozer_license.py
              #buildozer android debug deploy run
       - name: BetweenRuns
