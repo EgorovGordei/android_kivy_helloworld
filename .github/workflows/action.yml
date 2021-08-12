@@ -47,6 +47,7 @@ jobs:
       - name: Compile        
         run: |
              buildozer init
+             cat buildozer.spec
              buildozer android debug deploy run
              ls
 
