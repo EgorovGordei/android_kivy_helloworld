@@ -23,20 +23,22 @@ jobs:
         run: |
              sudo apt-get install -y python3-setuptools
              pip3 install buildozer
-
-             echo "DBG: 1"
              pip3 install https://github.com/kivy/buildozer/archive/master.zip
-             echo "DBG: 2"
              git clone https://github.com/kivy/buildozer
              cd buildozer
              python3 setup.py build
-             echo "DBG: 3"
              pip3 install -e .
-             echo "DBG: 4"
              export PATH=~/.local/bin/:$PATH
              . ~/.bashrc
              cd ../../
-             
+      - name: SomeMagic
+        run: |
+             sudo apt-get update
+             sudo apt-get install build-essential
+             sudo apt-get install libstdc++6
+             sudo apt-get install aidl
+             buildozer android update -v2
+
       - name: Compile        
         run: |
              buildozer init
