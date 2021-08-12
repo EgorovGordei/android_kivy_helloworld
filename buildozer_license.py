@@ -1,7 +1,0 @@
-from subprocess import Popen, PIPE, STDOUT
-
-
-# run buildozer via Popen to provide agreement to license
-p = Popen(['buildozer', 'android', 'debug', 'deploy', 'run'], stdout=PIPE, stdin=PIPE, stderr=STDOUT)    
-grep_stdout = p.communicate(input=b'y\n')[0]
-print(grep_stdout.decode('utf-8', 'replace'))
