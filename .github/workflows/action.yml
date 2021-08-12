@@ -37,6 +37,12 @@ jobs:
              sudo apt-get install build-essential
              sudo apt-get install libstdc++6
              sudo apt-get install aidl
+      - name: SomeMoreMagic
+        run: |
+             sudo apt install google-android-build-tools-installer
+             cd ~/.buildozer/android/platform/android-sdk-20
+             mkdir -p build-tools/0
+             ln -s /usr/bin/aidl ~/.buildozer/android/platform/android-sdk-20/build-tools/0/aidl
 
       - name: Compile        
         run: |
