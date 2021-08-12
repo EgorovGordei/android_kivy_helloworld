@@ -53,11 +53,11 @@ jobs:
       #       buildozer android clean
       - name: SecondRun
         run: |
-             buildozer android debug deploy run
+             buildozer android debug deploy
 
       - name: UploadArtifacts
         uses: actions/upload-artifact@v2
         with:
-          name: bin_folder
+          name: Distributive
           path: |
-            bin
+            bin/
