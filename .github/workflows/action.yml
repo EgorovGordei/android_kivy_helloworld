@@ -55,7 +55,8 @@ jobs:
              buildozer android debug deploy run
       - name: BetweenRuns
         run: |
-             ls /home
+             ls /home/runner
+             ls /home/runneradmin
              ls /home/runner/.buildozer/android/platform/android-ndk-r19b/build-tools/29.0.2/lib64/
              ls /home/runner/.buildozer/android/platform/android-ndk-r19b/build-tools/29.0.2/
              buildozer android clean
