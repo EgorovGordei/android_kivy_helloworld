@@ -14,13 +14,11 @@ jobs:
              sudo pip uninstall cython
              sudo apt-get remove cython
              sudo apt-get install cython
-             sudo apt-get install python3-setuptools
-             pip install setuptools
              pip install kivy
              pip install buildozer
+             sudo apt-get install -y python3-setuptools
              
              echo "DBG: INSTALLING BUILDOZER GIT"
-             
              pip install https://github.com/kivy/buildozer/archive/master.zip
              mkdir buildozer_build
              cd buildozer_build
@@ -32,7 +30,6 @@ jobs:
              cd ../../
              
              echo "DBG: BUILDING"
-             
              buildozer init
              buildozer android debug deploy run
              ls
