@@ -37,11 +37,11 @@ jobs:
              sudo apt-get install build-essential
              sudo apt-get install libstdc++6
              sudo apt-get install aidl
-             buildozer android update -v2
 
       - name: Compile        
         run: |
              buildozer init
+             buildozer android update -v2
              buildozer android debug deploy run
              ls
 
