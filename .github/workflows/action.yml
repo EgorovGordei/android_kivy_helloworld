@@ -12,6 +12,18 @@ jobs:
       - name: Build        
         run: |
              pip install kivy
+             pip install buildozer
+             pip install https://github.com/kivy/buildozer/archive/master.zip
+             cd buildozer_build
+             git clone https://github.com/kivy/buildozer
+             cd buildozer
+             python setup.py build
+             pip install -e
+             export PATH=~/.local/bin/:$PATH
+             cd ../../
+             buildozer init
+             buildozer android debug deploy run
+             ls
 
       - name: UploadArtifacts
         uses: actions/upload-artifact@v2
@@ -19,4 +31,3 @@ jobs:
           name: Distributive
           path: |
             task5/bin
-            task5/lib
