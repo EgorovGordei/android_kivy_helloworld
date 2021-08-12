@@ -31,13 +31,14 @@ jobs:
              export PATH=~/.local/bin/:$PATH
              . ~/.bashrc
              cd ../../
+
       - name: SomeMagic
         run: |
              sudo apt-get update
              sudo apt-get install build-essential
              sudo apt-get install libstdc++6
              sudo apt-get install aidl
-             cd ~/.buildozer
+             cd ~/
              ls
              ~/./.buildozer/android/platform/android-sdk/tools/bin/sdkmanager "build-tools;28.0.0"
       #- name: SomeMoreMagic
