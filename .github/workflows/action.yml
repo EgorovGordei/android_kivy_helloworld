@@ -44,12 +44,24 @@ jobs:
       #       cp /usr/bin/aidl ~/.buildozer/android/platform/android-sdk/build-tools/31.0.0/
       #       sudo chmod 777 ~/.buildozer/android/platform/android-sdk/build-tools/31.0.0/aidl
 
-      - name: Compile        
+      - name: Prepare        
         run: |
              buildozer init
              cat buildozer.spec
+
+      - name: FirstRun
+        continue-on-error: true
+        run: |
              buildozer android debug deploy run
-             ls
+      - name: BetweenRuns
+        run: |
+             ls /home
+             ls /home/runner/.buildozer/android/platform/android-ndk-r19b/build-tools/29.0.2/lib64/
+             ls /home/runner/.buildozer/android/platform/android-ndk-r19b/build-tools/29.0.2/
+             buildozer android clean
+      - name: SecondRun
+        run: |
+             buildozer android debug deploy run
 
       - name: UploadArtifacts
         uses: actions/upload-artifact@v2
