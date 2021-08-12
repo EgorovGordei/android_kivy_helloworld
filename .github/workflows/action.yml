@@ -13,10 +13,10 @@ jobs:
         run: |
              sudo pip3 uninstall cython
              sudo apt-get remove cython
-             #sudo apt-get install cython
              pip3 install --upgrade pip
-             echo "DBG::1"
-             pip3 install cython==0.20
+             pip3 install cython
+             #pip3 install cython==0.20
+             #sudo apt-get install cython
 
       - name: InstallKivy        
         run: |
