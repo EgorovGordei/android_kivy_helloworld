@@ -11,22 +11,22 @@ jobs:
 
       - name: Build        
         run: |
-             sudo pip uninstall cython
+             sudo pip3 uninstall cython
              sudo apt-get remove cython
              sudo apt-get install cython
-             pip install kivy
-             pip install buildozer
+             pip3 install kivy
+             pip3 install buildozer
              sudo apt-get install -y python3-setuptools
              
              echo "DBG: INSTALLING BUILDOZER GIT"
-             pip install https://github.com/kivy/buildozer/archive/master.zip
+             pip3 install https://github.com/kivy/buildozer/archive/master.zip
              git clone https://github.com/kivy/buildozer
              cd buildozer
              echo "DBG:1"
-             pip install setuptools
-             python setup.py build
+             pip3 install setuptools
+             python3 setup.py build
              echo "DBG:2"
-             pip install -e ./
+             pip3 install -e ./
              echo "DBG:3"
              export PATH=~/.local/bin/:$PATH
              cd ../../
