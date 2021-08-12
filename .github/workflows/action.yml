@@ -37,11 +37,11 @@ jobs:
              sudo apt-get install build-essential
              sudo apt-get install libstdc++6
              sudo apt-get install aidl
-      - name: SomeMoreMagic
-        run: |
-             which aidl /usr/bin/aidl
-             cp /usr/bin/aidl ~/.buildozer/android/platform/android-sdk/build-tools/31.0.0/
-             sudo chmod 777 ~/.buildozer/android/platform/android-sdk/build-tools/31.0.0/aidl
+      #- name: SomeMoreMagic
+      #  run: |
+      #       which aidl /usr/bin/aidl
+      #       cp /usr/bin/aidl ~/.buildozer/android/platform/android-sdk/build-tools/31.0.0/
+      #       sudo chmod 777 ~/.buildozer/android/platform/android-sdk/build-tools/31.0.0/aidl
 
       - name: Compile        
         run: |
