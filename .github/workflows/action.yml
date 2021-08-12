@@ -32,12 +32,12 @@ jobs:
              . ~/.bashrc
              cd ../../
 
-      - name: SomeMagic
-        run: |
-             sudo apt-get update
-             sudo apt-get install build-essential
-             sudo apt-get install libstdc++6
-             sudo apt-get install aidl
+      #- name: SomeMagic
+      #  run: |
+      #       sudo apt-get update
+      #       sudo apt-get install build-essential
+      #       sudo apt-get install libstdc++6
+      #       sudo apt-get install aidl
       #- name: SomeMoreMagic
       #  run: |
       #       which aidl /usr/bin/aidl
@@ -47,8 +47,6 @@ jobs:
       - name: Compile        
         run: |
              buildozer init
-             echo "DBG::1"
-             cd ~/.buildozer
              buildozer android debug deploy run
              ls
 
