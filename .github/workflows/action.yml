@@ -9,17 +9,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build        
+      - name: InstallCython        
         run: |
              sudo pip3 uninstall cython
              sudo apt-get remove cython
              sudo apt-get install cython
-             pip3 install kivy
-             pip3 install buildozer
-             sudo apt-get install python-kivy python-kivy-examples debhelper libgl1-mesa-dev libgles2-mesa-dev
+
+      - name: InstallKivy        
+        run: |
+             sudo apt-get install python-kivy
+             sudo apt-get install python-kivy-example
              sudo apt-get install -y python3-setuptools
              
-             echo "DBG: INSTALLING BUILDOZER GIT"
+      - name: InstallBuildozer        
+        run: |
+             pip3 install buildozer
              pip3 install https://github.com/kivy/buildozer/archive/master.zip
              git clone https://github.com/kivy/buildozer
              cd buildozer
@@ -32,7 +36,8 @@ jobs:
              export PATH=~/.local/bin/:$PATH
              cd ../../
              
-             echo "DBG: BUILDING"
+      - name: Compile        
+        run: |
              buildozer init
              buildozer android debug deploy run
              ls
