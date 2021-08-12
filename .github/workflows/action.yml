@@ -14,6 +14,7 @@ jobs:
              pip install kivy
              pip install buildozer
              pip install https://github.com/kivy/buildozer/archive/master.zip
+             mkdir buildozer_build
              cd buildozer_build
              git clone https://github.com/kivy/buildozer
              cd buildozer
