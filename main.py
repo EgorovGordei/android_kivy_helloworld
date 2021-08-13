@@ -26,7 +26,7 @@ BoxLayout:
 
 class GpsTest(App):
 
-    gps_location = StringProperty()
+    gps_location = StringProperty('None')
     gps_status = StringProperty('Click Start to get GPS location updates')
 
     def request_android_permissions(self):
@@ -65,9 +65,13 @@ class GpsTest(App):
             traceback.print_exc()
             self.gps_status = 'GPS is not implemented for your platform'
 
+        self.gps_location = "build... "
         if platform == "android":
             print("gps.py: Android detected. Requesting permissions")
+            self.gps_location = self.gps_location +\
+                            "gps.py: Android detected. Requesting permissions"
             self.request_android_permissions()
+        self.gps_location = self.gps_location + " ...end"
 
         return Builder.load_string(kv)
 
