@@ -22,6 +22,7 @@ jobs:
 
       - name: InstallCustomLibraries
         run: |
+             sudo apt-get install libffi-dev
              pip3 install requests
              
       - name: InstallBuildozer        
