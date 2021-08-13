@@ -27,6 +27,7 @@ jobs:
              pip3 install requests
              pip3 install urllib3
              pip3 install charset-normalizer
+             pip3 install idna
              
       - name: InstallBuildozer        
         run: |
