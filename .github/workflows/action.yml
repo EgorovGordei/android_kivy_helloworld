@@ -25,6 +25,7 @@ jobs:
              sudo apt-get install libffi-dev
              pip3 install cffi
              pip3 install requests
+             pip3 install urllib3
              
       - name: InstallBuildozer        
         run: |
