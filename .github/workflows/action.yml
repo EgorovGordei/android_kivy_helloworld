@@ -28,6 +28,7 @@ jobs:
              pip3 install urllib3
              pip3 install charset-normalizer
              pip3 install idna
+             pip3 install plyer
              
       - name: InstallBuildozer        
         run: |
