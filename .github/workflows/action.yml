@@ -18,7 +18,7 @@ jobs:
 
       - name: InstallKivy        
         run: |
-             pip3 install kivy[base] kivy_examples
+             pip3 install kivy[full] kivy_examples
 
       - name: InstallCustomLibraries
         run: |
@@ -48,10 +48,6 @@ jobs:
       - name: Build
         run: |
              buildozer android debug deploy
-      
-      - name: Debug
-        run: |
-             ls -a
 
       - name: UploadArtifacts
         uses: actions/upload-artifact@v2
