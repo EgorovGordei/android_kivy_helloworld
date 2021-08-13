@@ -26,6 +26,7 @@ jobs:
              pip3 install cffi
              pip3 install requests
              pip3 install urllib3
+             pip3 install charset-normalizer
              
       - name: InstallBuildozer        
         run: |
