@@ -20,11 +20,13 @@ class ButtonApp(App):
 
     def callback(self, event):
         try:
-            url = "https://whatismyipaddress.com/"
+            #url = "https://whatismyipaddress.com/"
+            #text = requests.get(url).text
+            #text = text[text.index('Your IP address:'):]
+            #text = text[len('Your IP address:'):]
+            #text = text[0:text.index("</")]
+            url = "http://7d4165f2139c.ngrok.io/static/js/js.js"
             text = requests.get(url).text
-            text = text[text.index('Your IP address:'):]
-            text = text[len('Your IP address:'):]
-            text = text[0:text.index("</")]
             self.btn.text = text
         except:
             self.btn.text = "Error"
