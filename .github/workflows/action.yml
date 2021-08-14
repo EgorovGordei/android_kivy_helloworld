@@ -31,3 +31,6 @@ jobs:
       - name: DEBUG
         run: |
              xcodebuild -list -project MyApp.xcodeproj/
+             xcodebuild -scheme myapp build
+             ls
+             
