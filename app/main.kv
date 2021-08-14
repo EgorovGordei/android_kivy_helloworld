@@ -1,0 +1,18 @@
+BoxLayout:
+    orientation: 'vertical'
+    Label:
+        text: app.last_message
+    TextInput:
+        id: my_mesage_input
+        hint_text:'Enter text'
+        on_text: app.my_message_input_ontext()
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: '48dp'
+        Button:
+            text: 'Press to get last message'
+            on_press: app.get_last_message()
+        Button:
+            text: 'Press to send message'
+            on_press: app.send_message()
