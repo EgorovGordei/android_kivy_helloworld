@@ -32,6 +32,9 @@ jobs:
         run: |
              ls -a
              toolchain recipes
+      - name: debug
+        run: |
+             python3 bash_cmd.py
 
 
   Android:
