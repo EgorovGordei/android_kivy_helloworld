@@ -2,7 +2,7 @@ name: GitHub Actions Build
 on: 
   push:
     branches: 
-      [ builder ]
+      [ builder-debug-140821-1647 ]
 jobs:
   IOS:
     runs-on: macos-latest
@@ -27,76 +27,7 @@ jobs:
         run: |
              pip3 install kivy[full]
              pip3 install kivy-ios
-
-      - name: ToolchainRecipesInstall
-        continue-on-error: true
-        run: |
-             python3 toolchain_recipes.py
       
-      - name: CreateApp
+      - name: DEBUG
         run: |
-             toolchain create MyApp $PWD
-
-      - name: UploadArtifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: DistributiveIOS
-          path: |
-            MyApp-ios/
-
-
-  Android:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: InstallCython        
-        run: |
-             sudo pip3 uninstall cython
-             sudo apt-get remove cython
-             pip3 install --upgrade pip
-             pip3 install cython
-
-      - name: InstallKivy        
-        run: |
-             pip3 install kivy[full] kivy_examples
-
-      - name: InstallCustomLibraries
-        run: |
-             sudo apt-get install libffi-dev
-             pip3 install cffi
-             pip3 install requests
-             pip3 install urllib3
-             pip3 install charset-normalizer
-             pip3 install idna
-             pip3 install plyer
-             
-      - name: InstallBuildozer        
-        run: |
-             sudo apt-get install -y python3-setuptools
-             pip3 install buildozer
-             pip3 install https://github.com/kivy/buildozer/archive/master.zip
-             git clone https://github.com/kivy/buildozer
-             cd buildozer
-             python3 setup.py build
-             pip3 install -e .
-             export PATH=~/.local/bin/:$PATH
-             . ~/.bashrc
-             cd ../../
-
-      - name: Prepare        
-        run: |
-             buildozer init
-             python3 buildozer_spec.py
-             cat buildozer.spec
-
-      - name: Build
-        run: |
-             buildozer android debug deploy
-
-      - name: UploadArtifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: DistributiveAndroid
-          path: |
-            bin/
+             xcodebuild -list -project MyApp.xcodeproj/
