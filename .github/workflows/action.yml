@@ -57,9 +57,11 @@ jobs:
       - name: CDWorkingDirectory
         run: |
              cd app/
+             ls
 
       - name: InstallCython        
         run: |
+             ls
              sudo pip3 uninstall cython
              sudo apt-get remove cython
              pip3 install --upgrade pip
