@@ -63,6 +63,7 @@ jobs:
       - name: InstallKivy        
         run: |
              pip3 install kivy[full] kivy_examples
+             pip3 install kivymd
 
       - name: InstallCustomLibraries
         run: |
