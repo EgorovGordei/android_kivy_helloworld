@@ -34,7 +34,7 @@ jobs:
              toolchain recipes
       - name: debug
         run: |
-             python3 bash_cmd.py
+             python3 toolchain_recipes.py
 
 
   Android:
