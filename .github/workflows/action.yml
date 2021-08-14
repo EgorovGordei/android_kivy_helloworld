@@ -21,14 +21,16 @@ jobs:
       
       - name: InstallCython
         run: |
-             pip3 install cython3
+             pip3 install cython
       
       - name: InstallKivyIOS
         run: |
              pip3 install kivy[full]
              pip3 install kivy-ios
+
       - name: Recipes
         run: |
+             ls -a
              toolchain recipes
 
 
