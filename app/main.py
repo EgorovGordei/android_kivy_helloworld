@@ -11,7 +11,7 @@ import requests
 
 
 kv = open('main.kv', 'r').read()
-URL = "http://2c3b45edb30a.ngrok.io"
+URL = "http://2c3b45edb30a.ngrok.io/"
 
 class ChatApp(App):
     last_message = StringProperty('')
