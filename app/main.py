@@ -9,17 +9,19 @@ import requests
 from kivymd.app import MDApp
 
 
-kv = open('main.kv', 'r').read()
-URL = "http://2c3b45edb30a.ngrok.io/"
+mainkv = open('main.kv', 'r').read()
+URL = "http://de87793c1849.ngrok.io/"
 
 class ChatApp(MDApp):
     last_message = StringProperty('')
     my_message = StringProperty('')
 
     def build(self):
+        kv = mainkv.replace("<URL_INPUT::TEXT>", '"' + URL + '"')
         return Builder.load_string(kv)
 
     def get_last_message(self):
+        URL = self.root.ids.url_input.text
         try:
             self.last_message = requests.get(URL + "get_last_message").text
         except Exception as e:
@@ -28,6 +30,7 @@ class ChatApp(MDApp):
         print(self.last_message)
 
     def send_message(self):
+        URL = self.root.ids.url_input.text
         try:
             requests.post(url = URL+"send_message",
                           data = {'message':self.my_message})
