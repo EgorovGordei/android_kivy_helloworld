@@ -91,7 +91,7 @@ jobs:
         run: |
              cd app
              buildozer init
-             python3 buildozer_spec.py
+             python3 ../buildozer_spec.py
              cat buildozer.spec
 
       - name: Build
