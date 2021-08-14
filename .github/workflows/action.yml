@@ -36,8 +36,13 @@ jobs:
       - name: CreateApp
         run: |
              toolchain create MyApp $PWD
-             ls
-             ls MyApp-ios
+
+      - name: UploadArtifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: DistributiveIOS
+          path: |
+            MyApp-ios/
 
 
   Android:
@@ -92,6 +97,6 @@ jobs:
       - name: UploadArtifacts
         uses: actions/upload-artifact@v2
         with:
-          name: Distributive
+          name: DistributiveAndroid
           path: |
             bin/
