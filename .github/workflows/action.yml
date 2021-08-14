@@ -28,13 +28,16 @@ jobs:
              pip3 install kivy[full]
              pip3 install kivy-ios
 
-      - name: Recipes
-        run: |
-             ls -a
-             toolchain recipes
-      - name: debug
+      - name: ToolchainRecipesInstall
+        continue-on-error: true
         run: |
              python3 toolchain_recipes.py
+      
+      - name: CreateApp
+        run: |
+             toolchain create MyApp $PWD
+             ls
+             ls MyApp-ios
 
 
   Android:
