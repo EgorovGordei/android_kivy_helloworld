@@ -17,9 +17,9 @@ for letter in output:
     if counter == 0 and letter == " ":
         counter = 1
         new_output += " "
-    else if counter == 1 and letter == "\n":
+    elif counter == 1 and letter == "\n":
         counter = 0
-    else if counter == 0:
+    elif counter == 0:
         new_output += letter
 output = new_output
 
