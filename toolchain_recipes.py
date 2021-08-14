@@ -5,11 +5,7 @@ bashCmd = ["toolchain", "recipes"]
 process = subprocess.Popen(bashCmd, stdout=subprocess.PIPE)
 output, error = process.communicate()
 
-print("DBG:OUTPUT:", output)
-
 output = output.decode(errors="ignore")
-
-print("DBG:OUTPUT:", output)
 
 counter = 0
 new_output = ""
@@ -23,4 +19,7 @@ for letter in output:
         new_output += letter
 output = new_output
 
-print("DBG:OUTPUT:", output)
+bashCmd = ["toolchain", "build", "python3"] + list(output.split(" "))
+print("Recipes\n:", bashCmd)
+process = subprocess.Popen(bashCmd, stdout=subprocess.PIPE)
+output, error = process.communicate()
