@@ -5,9 +5,14 @@ on:
       [ builder ]
 jobs:
   IOS:
+    if: false
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+      
+      - name: CDWorkingDirectory
+        run: |
+             cd app/
       
       - name: InstallXcode
         continue-on-error: true
@@ -29,7 +34,6 @@ jobs:
              pip3 install kivy-ios
 
       - name: ToolchainRecipesInstall
-        continue-on-error: true
         run: |
              python3 toolchain_recipes.py
       
@@ -49,6 +53,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      
+      - name: CDWorkingDirectory
+        run: |
+             cd app/
 
       - name: InstallCython        
         run: |
