@@ -17,7 +17,7 @@ for letter in output:
         counter = 0
     elif counter == 0:
         new_output += letter
-output = new_output
+output = new_output[0:-1]
 
 bashCmd = ["toolchain", "build", "python3"] + list(output.split(" "))
 print("Recipes\n:", bashCmd)
