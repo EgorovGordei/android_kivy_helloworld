@@ -1,11 +1,13 @@
 BoxLayout:
     orientation: 'vertical'
-    Label:
+    MDLabel:
         text: app.last_message
-    TextInput:
-        id: my_mesage_input
-        hint_text:'Enter text'
-        on_text: app.my_message_input_ontext()
+	MDTextField:
+	    id: my_message_input
+		hint_text: "Enter message"
+		mode: "fill"
+		fill_color: 0, 0, 0, .4
+		on_text: app.my_message_input_ontext()
     BoxLayout:
         orientation: 'horizontal'
         size_hint_y: None

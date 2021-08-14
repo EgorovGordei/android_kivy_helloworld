@@ -1,6 +1,4 @@
 import kivy
-kivy.require("1.9.1")
-
 from kivy.lang import Builder
 from plyer import gps
 from kivy.app import App
@@ -8,12 +6,13 @@ from kivy.properties import StringProperty
 from kivy.clock import mainthread
 from kivy.utils import platform
 import requests
+from kivymd.app import MDApp
 
 
 kv = open('main.kv', 'r').read()
 URL = "http://2c3b45edb30a.ngrok.io/"
 
-class ChatApp(App):
+class ChatApp(MDApp):
     last_message = StringProperty('')
     my_message = StringProperty('')
 
@@ -26,6 +25,7 @@ class ChatApp(App):
         except Exception as e:
             self.last_message = "Error"
             print(e)
+        print(self.last_message)
 
     def send_message(self):
         try:
@@ -35,10 +35,10 @@ class ChatApp(App):
             self.last_message = "Error"
             print(e)
         self.my_message = ""
-        self.root.ids.my_mesage_input.text = ""
+        self.root.ids.my_message_input.text = ""
 
     def my_message_input_ontext(self):
-        text = self.root.ids.my_mesage_input.text
+        text = self.root.ids.my_message_input.text
         self.my_message = text
 
 
