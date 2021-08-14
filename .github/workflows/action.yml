@@ -10,6 +10,7 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: InstallXcode
+        continue-on-error: true
         run: |
              xcode-select --install
 
