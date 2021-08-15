@@ -28,7 +28,7 @@ class GpsTest(App):
             self.gps_location = "Not implemented"
         return Builder.load_string(mainkv)
     @mainthread
-    def on_location(self):
+    def on_location(self, **kwargs):
         self.gps_location = '\n'.join([
             '{}={}'.format(k, v) for k, v in kwargs.items()])
     def on_resume(self):
