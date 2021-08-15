@@ -9,48 +9,29 @@ import requests
 from kivymd.app import MDApp
 
 
-mainkv = open('main.kv', 'r').read()
-URL = "http://de87793c1849.ngrok.io/"
+kv = """
+BoxLayout:
+    orientation: 'vertical'
+    Label:
+        text: app.gps_location
+ """
 
-class ChatApp(MDApp):
-    last_message = StringProperty('')
-    my_message = StringProperty('')
-
+class GpsTest(App):
+    gps_location = StringProperty('None')
     def build(self):
-        kv = mainkv.replace("<URL_INPUT::TEXT>", '"' + URL + '"')
-        return Builder.load_string(kv)
-
-    def get_last_message(self):
-        URL = self.root.ids.url_input.text
         try:
-            self.last_message = requests.get(URL + "get_last_message").text
-        except Exception as e:
-            self.last_message = "Error"
-            print(e)
-        print(self.last_message)
-
-    def send_message(self):
-        URL = self.root.ids.url_input.text
-        try:
-            requests.post(url = URL+"send_message",
-                          data = {'message':self.my_message})
-        except Exception as e:
-            self.last_message = "Error"
-            print(e)
-        self.my_message = ""
-        self.root.ids.my_message_input.text = ""
-
-    def my_message_input_ontext(self):
-        text = self.root.ids.my_message_input.text
-        self.my_message = text
-
-
-root = ChatApp()
-root.run()
-
-
-
-
+            gps.configure(on_location=self.on_location)
+            gps.start()
+        except NotImplementedError:
+            self.gps_location = "Not implemented"
+    def on_location(self):
+        self.gps_location = '\n'.join([
+            '{}={}'.format(k, v) for k, v in kwargs.items()])
+    def on_pause(self):
+        gps.stop()
+        return True
+        
+GpsTest.run()
 
 
 
