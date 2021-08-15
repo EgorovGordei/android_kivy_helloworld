@@ -8,6 +8,11 @@ s = s.replace("#android.permissions = INTERNET", "android.permissions = INTERNET
 s = s.replace("requirements = python3,kivy", "requirements = libffi,cffi,python3,kivy==master,kivymd==0.104.2,sdl2_ttf==2.0.15,pillow,requests,urllib3,charset-normalizer,idna,plyer")
 s = s.replace("#p4a.branch = master", "p4a.branch = develop")
 
+# for Misha: decrease API level to KitKat
+s = s.replace("#android.minapi = 21", "android.minapi = 19")
+s = s.replace("#android.ndk_api = 21", "android.ndk_api = 19")
+#s = s.replace("#android.api = 27", "android.api = 30")
+
 f = open("buildozer.spec", 'w')
 f.write(s)
 f.close()
