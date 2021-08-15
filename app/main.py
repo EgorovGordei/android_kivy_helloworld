@@ -10,140 +10,97 @@ import time
 import os
 
 from plyer import gps
-from plyer import camera
+#from plyer import camera
 import requests
 
-from kivy.graphics import Mesh, Color
-from kivy.graphics.tesselator import Tesselator, WINDING_ODD, TYPE_POLYGONS
-from kivy.uix.floatlayout import FloatLayout
+from kivy.graphics.texture import Texture
+from kivy.uix.camera import Camera
+from kivy.lang import Builder
+from kivy.clock import Clock
+import numpy as np
+import cv2
+
+
+
+
+
+
+class Camera2(Camera):
+    firstFrame=None
+    def _camera_loaded(self, *largs):
+        if kivy.platform=='android':
+            self.texture = Texture.create(size=self.resolution,colorfmt='rgb')
+            self.texture_size = list(self.texture.size)
+        else:
+            super(Camera2, self)._camera_loaded()
+
+    def on_tex(self, *l):
+        if kivy.platform=='android':
+            buf = self._camera.grab_frame()
+            if not buf:
+                return
+            frame = self._camera.decode_frame(buf)
+            self.image = frame = self.process_frame(frame)
+            buf = frame.tostring()
+            self.texture.blit_buffer(buf, colorfmt='rgb', bufferfmt='ubyte')
+        super(Camera2, self).on_tex(*l)
+
+    def process_frame(self,frame):
+        r,g,b=cv2.split(frame)
+        frame=cv2.merge((b,g,r))        
+        rows,cols,channel=frame.shape
+        M=cv2.getRotationMatrix2D((cols/2,rows/2),90,1)
+        dst=cv2.warpAffine(frame,M,(cols,rows))
+        frame=cv2.flip(dst,1)
+        if self.index==1:
+            frame=cv2.flip(dst,-1)
+        return frame
+
+
+
 
 
 Builder.load_string("""
-<ShapeBuilder>:
-    canvas.before:
-        Color:
-            rgba: 0, 1, 0, 1
-        Rectangle:
-            pos: self.pos
-            size: self.size
-    BoxLayout:
-        size_hint_y: None
-        height: "48dp"
-        spacing: "2dp"
-        padding: "2dp"
+<MyLayout>:
+    orientation:'vertical'
+    padding:(36,36)
 
-        ToggleButton:
-            text: "Debug"
-            id: debug
-            on_release: root.build()
-        Button:
-            text: "New shape"
-            on_release: root.push_shape()
-        Button:
-            text: "Build"
-            on_release: root.build()
-        Button:
-            text: "Reset"
-            on_release: root.reset()
-
-    BoxLayout:
-        size_hint_y: None
-        height: "48dp"
-        top: root.top
-        spacing: "2dp"
-        padding: "2dp"
-        Label:
-            id: status
-            text: "Status"
+    Label:
+        text:'opencv demo'
+        halign:'left'
+        valign:'top'
+        size_hint:(1,None)
+        height:'48dp'
+    Camera2:
+        index:0
+        resolution:(960,720)
+        id:camera
+        play:True
+    Label:
+        id:label
+        halign:'left'
+        valign:'top'
+        size_hint:(1,None)
+        height:'48dp'
+    Label:
 """)
 
 
-class ShapeBuilder(FloatLayout):
-    def __init__(self, **kwargs):
-        super(ShapeBuilder, self).__init__(**kwargs)
-        self.shapes = [
-            [100, 100, 300, 100, 300, 300, 100, 300],
-            [150, 150, 250, 150, 250, 250, 150, 250]
-        ]  # the 'hollow square' shape
-        self.shape = []
-        self.build()
+class MyLayout(BoxLayout):
+    pass
 
-    def on_touch_down(self, touch):
-        if super(ShapeBuilder, self).on_touch_down(touch):
-            return True
-        self.shape.extend(touch.pos)
-        self.build()
-        return True
-
-    def on_touch_move(self, touch):
-        if super(ShapeBuilder, self).on_touch_move(touch):
-            return True
-        self.shape.extend(touch.pos)
-        self.build()
-        return True
-
-    def on_touch_up(self, touch):
-        if super(ShapeBuilder, self).on_touch_up(touch):
-            return True
-        self.push_shape()
-        self.build()
-
-    def push_shape(self):
-        self.shapes.append(self.shape)
-        self.shape = []
-
+class MainApp(App):
     def build(self):
-        tess = Tesselator()
-        count = 0
-        for shape in self.shapes:
-            if len(shape) >= 3:
-                tess.add_contour(shape)
-                count += 1
-        if self.shape and len(self.shape) >= 3:
-            tess.add_contour(self.shape)
-            count += 1
-        if not count:
-            return
-        ret = tess.tesselate(WINDING_ODD, TYPE_POLYGONS)
-        self.canvas.after.clear()
+        return MyLayout()
+    def on_start(self):
+        Clock.schedule_once(self.detect,5)
 
-        debug = self.ids.debug.state == "down"
-        if debug:
-            with self.canvas.after:
-                c = 0
-                for vertices, indices in tess.meshes:
-                    Color(c, 1, 1, mode="hsv")
-                    c += 0.3
-                    indices = [0]
-                    for i in range(1, len(vertices) // 4):
-                        if i > 0:
-                            indices.append(i)
-                        indices.append(i)
-                        indices.append(0)
-                        indices.append(i)
-                    indices.pop(-1)
-                    Mesh(vertices=vertices, indices=indices, mode="lines")
-        else:
-            with self.canvas.after:
-                Color(1, 1, 1, 1)
-                for vertices, indices in tess.meshes:
-                    Mesh(vertices=vertices, indices=indices,
-                         mode="triangle_fan")
+    def detect(self,nap):
+        image=self.root.ids.camera.image
+        rows,cols=image.shape[:2]
+        ctime=time.ctime()[11:19]
+        self.root.ids.label.text='%s image rows:%d cols:%d'%(ctime,rows,cols)
+        Clock.schedule_once(self.detect,1)
 
-        self.ids.status.text = "Shapes: {} - Vertex: {} - Elements: {}".format(
-            count, tess.vertex_count, tess.element_count)
-
-    def reset(self):
-        self.shapes = []
-        self.shape = []
-        self.ids.status.text = "Shapes: {} - Vertex: {} - Elements: {}".format(
-            0, 0, 0)
-        self.canvas.after.clear()
-
-
-class TessApp(MDApp):
-    def build(self):
-        return ShapeBuilder()
-
-
-TessApp().run()
+if __name__ == '__main__':
+    MainApp().run()
