@@ -12,11 +12,14 @@ from kivymd.app import MDApp
 mainkv = """
 BoxLayout:
     orientation: 'vertical'
-    Label:
+    MDLabel:
         text: app.gps_location
+    Button:
+        text: "Just kivy settings"
+        on_release: app.open_settings()
  """
 
-class GpsTest(App):
+class GpsTest(MDApp):
     gps_location = StringProperty('None')
     def build(self):
         try:
@@ -31,6 +34,7 @@ class GpsTest(App):
     def on_location(self, **kwargs):
         self.gps_location = '\n'.join([
             '{}={}'.format(k, v) for k, v in kwargs.items()])
+        print(self.gps_location)
     def on_resume(self):
         gps.start()
         pass
