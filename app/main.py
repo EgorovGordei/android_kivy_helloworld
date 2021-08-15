@@ -15,92 +15,59 @@ import requests
 
 from kivy.graphics.texture import Texture
 from kivy.uix.camera import Camera
-from kivy.lang import Builder
 from kivy.clock import Clock
 import numpy as np
 import cv2
 
 
 
-
-
-
-class Camera2(Camera):
-    firstFrame=None
-    def _camera_loaded(self, *largs):
-        if kivy.platform=='android':
-            self.texture = Texture.create(size=self.resolution,colorfmt='rgb')
-            self.texture_size = list(self.texture.size)
-        else:
-            super(Camera2, self)._camera_loaded()
-
-    def on_tex(self, *l):
-        if kivy.platform=='android':
-            buf = self._camera.grab_frame()
-            if not buf:
-                return
-            frame = self._camera.decode_frame(buf)
-            self.image = frame = self.process_frame(frame)
-            buf = frame.tostring()
-            self.texture.blit_buffer(buf, colorfmt='rgb', bufferfmt='ubyte')
-        super(Camera2, self).on_tex(*l)
-
-    def process_frame(self,frame):
-        r,g,b=cv2.split(frame)
-        frame=cv2.merge((b,g,r))        
-        rows,cols,channel=frame.shape
-        M=cv2.getRotationMatrix2D((cols/2,rows/2),90,1)
-        dst=cv2.warpAffine(frame,M,(cols,rows))
-        frame=cv2.flip(dst,1)
-        if self.index==1:
-            frame=cv2.flip(dst,-1)
-        return frame
-
-
-
-
-
 Builder.load_string("""
-<MyLayout>:
-    orientation:'vertical'
-    padding:(36,36)
+<MyLayout>
+    orientation: 'vertical'
+    size: root.width, root.height
 
-    Label:
-        text:'opencv demo'
-        halign:'left'
-        valign:'top'
-        size_hint:(1,None)
-        height:'48dp'
-    Camera2:
-        index:0
-        resolution:(960,720)
-        id:camera
-        play:True
-    Label:
-        id:label
-        halign:'left'
-        valign:'top'
-        size_hint:(1,None)
-        height:'48dp'
-    Label:
+    AndroidCamera:
+        index: 0
+        resolution: self.camera_resolution
+        allow_stretch: True
+        play: True
 """)
 
+class AndroidCamera(Camera):
+    camera_resolution = (640, 480)
+    counter = 0
+
+    def _camera_loaded(self, *largs):
+        self.texture = Texture.create(size=np.flip(self.camera_resolution), colorfmt='rgb')
+        self.texture_size = list(self.texture.size)
+
+    def on_tex(self, *l):
+        if self._camera._buffer is None:
+            return None
+        frame = self.frame_from_buf()
+        self.frame_to_screen(frame)
+        super(AndroidCamera, self).on_tex(*l)
+
+    def frame_from_buf(self):
+        w, h = self.resolution
+        frame = np.frombuffer(self._camera._buffer.tostring(), 'uint8').reshape((h + h // 2, w))
+        frame_bgr = cv2.cvtColor(frame, 93)
+        return np.rot90(frame_bgr, 3)
+
+    def frame_to_screen(self, frame):
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        cv2.putText(frame_rgb, str(self.counter), (20, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+        self.counter += 1
+        flipped = np.flip(frame_rgb, 0)
+        buf = flipped.tostring()
+        self.texture.blit_buffer(buf, colorfmt='rgb', bufferfmt='ubyte')
 
 class MyLayout(BoxLayout):
     pass
 
-class MainApp(App):
+class MyApp(App):
     def build(self):
         return MyLayout()
-    def on_start(self):
-        Clock.schedule_once(self.detect,5)
-
-    def detect(self,nap):
-        image=self.root.ids.camera.image
-        rows,cols=image.shape[:2]
-        ctime=time.ctime()[11:19]
-        self.root.ids.label.text='%s image rows:%d cols:%d'%(ctime,rows,cols)
-        Clock.schedule_once(self.detect,1)
 
 if __name__ == '__main__':
-    MainApp().run()
+    MyApp().run()
