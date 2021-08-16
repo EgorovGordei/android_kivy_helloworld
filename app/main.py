@@ -46,7 +46,30 @@ class CameraClick(BoxLayout):
     def capture(self):
         camera = self.ids['camera']
         timestr = time.strftime("%Y%m%d_%H%M%S")
-        self.ids['image'].texture = camera.export_as_image().texture
+        camtexture = camera.export_as_image().texture
+
+        height, width = camtexture.height, camtexture.width
+        frame = np.frombuffer(camtexture.pixels, np.uint8)
+        frame = frame.reshape(height, width, 4)
+        buf1 = cv2.flip(frame, 0)
+        buf = buf1.tobytes()
+        texture1 = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr') 
+        texture1.blit_buffer(buf)
+        self.ids['image'].texture = texture1
+        """
+        height, width = camera.texture.height, camera.texture.width
+        newvalue = np.frombuffer(camera.texture.pixels, np.uint8)
+        newvalue = newvalue.reshape(height, width, 4)
+        gray = cv2.cvtColor(newvalue, cv2.COLOR_RGBA2GRAY)
+
+        buf1 = cv2.flip(gray, 0)
+        buf = buf1.tobytes()
+        texture1 = Texture.create(size=(gray.shape[1], gray.shape[0]), colorfmt='bgr') 
+
+        #if working on RASPBERRY PI, use colorfmt='rgba' here instead, but stick with "bgr" in blit_buffer. 
+        texture1.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
+        self.ids['image'].texture = texture1
+        """
 
 
 class TestCamera(MDApp):
