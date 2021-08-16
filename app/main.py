@@ -54,7 +54,7 @@ class CameraClick(BoxLayout):
         buf1 = cv2.flip(frame, 0)
         buf = buf1.tobytes()
         texture1 = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr') 
-        texture1.blit_buffer(buf, colorfmt='rgb')
+        texture1.blit_buffer(buf, colorfmt='bgr')
         self.ids['image'].texture = texture1
         """
         height, width = camera.texture.height, camera.texture.width
