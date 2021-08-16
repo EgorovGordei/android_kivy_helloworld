@@ -74,7 +74,7 @@ jobs:
              pip3 install charset-normalizer
              pip3 install idna
              pip3 install plyer
-             pip3 install opencv
+             pip3 install opencv-python
              pip3 install numpy
              sudo apt-get install libsdl2-ttf-dev
              
