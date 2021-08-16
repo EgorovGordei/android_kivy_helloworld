@@ -10,7 +10,7 @@ import time
 import os
 
 from plyer import gps
-#from plyer import camera
+from plyer import camera
 import requests
 
 from kivy.graphics.texture import Texture
@@ -20,54 +20,44 @@ import numpy as np
 import cv2
 
 
-
-Builder.load_string("""
-<MyLayout>
+mainkv = """
+<CameraClick>:
     orientation: 'vertical'
-    size: root.width, root.height
+    Camera:
+        id: camera
+        resolution: (640, 480)
+        play: False
+    ToggleButton:
+        text: 'Play'
+        on_press: camera.play = not camera.play
+        size_hint_y: None
+        height: '48dp'
+    Button:
+        text: 'Capture'
+        size_hint_y: None
+        height: '48dp'
+        on_press: root.capture()
+    Image:
+        id: image
+"""
 
-    AndroidCamera:
-        index: 0
-        resolution: self.camera_resolution
-        allow_stretch: True
-        play: True
-""")
 
-class AndroidCamera(Camera):
-    camera_resolution = (640, 480)
-    counter = 0
+class CameraClick(BoxLayout):
+    def capture(self):
+        camera = self.ids['camera']
+        timestr = time.strftime("%Y%m%d_%H%M%S")
+        self.ids['image'].texture = camera.export_as_image().texture
 
-    def _camera_loaded(self, *largs):
-        self.texture = Texture.create(size=np.flip(self.camera_resolution), colorfmt='rgb')
-        self.texture_size = list(self.texture.size)
 
-    def on_tex(self, *l):
-        if self._camera._buffer is None:
-            return None
-        frame = self.frame_from_buf()
-        self.frame_to_screen(frame)
-        super(AndroidCamera, self).on_tex(*l)
-
-    def frame_from_buf(self):
-        w, h = self.resolution
-        frame = np.frombuffer(self._camera._buffer.tostring(), 'uint8').reshape((h + h // 2, w))
-        frame_bgr = cv2.cvtColor(frame, 93)
-        return np.rot90(frame_bgr, 3)
-
-    def frame_to_screen(self, frame):
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        cv2.putText(frame_rgb, str(self.counter), (20, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-        self.counter += 1
-        flipped = np.flip(frame_rgb, 0)
-        buf = flipped.tostring()
-        self.texture.blit_buffer(buf, colorfmt='rgb', bufferfmt='ubyte')
-
-class MyLayout(BoxLayout):
-    pass
-
-class MyApp(App):
+class TestCamera(MDApp):
     def build(self):
-        return MyLayout()
+        if platform == "android":
+            from android.permissions import request_permissions, Permission
+            request_permissions([Permission.CAMERA,
+                                 Permission.WRITE_EXTERNAL_STORAGE,
+                                 Permission.READ_EXTERNAL_STORAGE])
+        Builder.load_string(mainkv)
+        return CameraClick()
 
-if __name__ == '__main__':
-    MyApp().run()
+
+TestCamera().run()
