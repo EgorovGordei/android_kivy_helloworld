@@ -37,25 +37,42 @@ mainkv = """
         size_hint_y: None
         height: '48dp'
         on_press: root.capture()
+    Button:
+        text: 'Change image state'
+        on_press: root.change_image_state()
     Image:
         id: image
 """
 
 
 class CameraClick(BoxLayout):
+    image_state = 0
     def capture(self):
-        camera = self.ids['camera']
-        timestr = time.strftime("%Y%m%d_%H%M%S")
-        camtexture = camera.export_as_image().texture
+        if self.image_state % 2 == 0:
+            camera = self.ids['camera']
+            timestr = time.strftime("%Y%m%d_%H%M%S")
+            camtexture = camera.texture
 
-        height, width = camtexture.height, camtexture.width
-        frame = np.frombuffer(camtexture.pixels, np.uint8)
-        frame = frame.reshape(height, width, 4)
-        buf1 = cv2.flip(frame, 0)
-        buf = buf1.tobytes()
-        texture1 = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr') 
-        texture1.blit_buffer(buf, colorfmt='bgr')
-        self.ids['image'].texture = texture1
+            height, width = camtexture.height, camtexture.width
+            frame = np.frombuffer(camtexture.pixels, np.uint8)
+            frame = frame.reshape(height, width, 4)
+            buf1 = cv2.flip(frame, 0)
+            buf = buf1.tobytes()
+            texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr') 
+            texture.blit_buffer(buf, colorfmt='bgr')
+
+        if self.image_state % 2 == 1:
+            height = 100
+            width = 100
+            texture = Texture.create(size=(height, width))
+            size = height * width * 3
+            buf = [int(x * 255 / size) for x in range(size)]
+            for i in range(height):
+                buf[3*(i*width+i)] = 1000
+            buf = ''.join(map(chr, buf)).encode('utf-8')
+            texture.blit_buffer(buf, colorfmt='bgr')
+        
+        self.ids['image'].texture = texture
         """
         height, width = camera.texture.height, camera.texture.width
         newvalue = np.frombuffer(camera.texture.pixels, np.uint8)
@@ -70,6 +87,8 @@ class CameraClick(BoxLayout):
         texture1.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
         self.ids['image'].texture = texture1
         """
+    def change_image_state(self):
+        self.image_state += 1
 
 
 class TestCamera(MDApp):
