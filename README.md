@@ -1,6 +1,17 @@
-Python (Kivy) app -> Android APK
+#Python (Kivy) app -> Android APK
 
-# TODO: IOS app
-# TODO: nice Readme.md
-# TODO: try combining opencv and kivy camera
-# TODO: 3D graphics
+Choose any project from examples/ or your own
+
+Copy your project into app/
+
+Change buildozer_spec.py (buildozer config script)
+
+Change actions.yml file if needed
+
+---
+
+-TODO: IOS app
+
+-TODO: nice Readme.md
+
+-TODO: 3D graphics
