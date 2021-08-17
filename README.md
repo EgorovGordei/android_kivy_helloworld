@@ -12,6 +12,4 @@ Change actions.yml file if needed
 
 -TODO: IOS app
 
--TODO: nice Readme.md
-
 -TODO: 3D graphics
