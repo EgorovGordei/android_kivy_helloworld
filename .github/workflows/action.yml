@@ -76,6 +76,7 @@ jobs:
              pip3 install plyer
              pip3 install opencv-python
              pip3 install numpy
+             pip3 install imutils
              sudo apt-get install libsdl2-ttf-dev
              
       - name: InstallBuildozer        
