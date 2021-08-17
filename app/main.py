@@ -51,7 +51,6 @@ class CameraClick(BoxLayout):
     def capture(self):
         if self.code_state % 2 == 0:
             camera = self.ids['camera']
-            timestr = time.strftime("%Y%m%d_%H%M%S")
             camtexture = camera.texture
 
             height, width = camtexture.height, camtexture.width
@@ -60,16 +59,18 @@ class CameraClick(BoxLayout):
             buf = cv2.flip(frame, -1)
             buf = buf.tobytes()
             texture = Texture.create(size=(frame.shape[1], frame.shape[0])) 
-            if (self.code_state / 2) % 5 == 0:
+            if (self.code_state / 2) % 6 == 0:
                 texture.blit_buffer(buf, colorfmt='rgb')
-            if (self.code_state / 2) % 5 == 1:
+            if (self.code_state / 2) % 6 == 1:
                 texture.blit_buffer(buf, colorfmt='bgr')
-            if (self.code_state / 2) % 5 == 2:
+            if (self.code_state / 2) % 6 == 2:
                 texture.blit_buffer(buf, colorfmt='rgba')
-            if (self.code_state / 2) % 5 == 3:
+            if (self.code_state / 2) % 6 == 3:
                 texture.blit_buffer(buf, colorfmt='bgra')
-            if (self.code_state / 2) % 5 == 4:
+            if (self.code_state / 2) % 6 == 4:
                 texture.blit_buffer(buf, colorfmt=camtexture.colorfmt)
+            if (self.code_state / 2) % 6 == 5:
+                texture = camtexture
 
         if self.code_state % 2 == 1:
             height = 100
