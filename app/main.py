@@ -56,17 +56,28 @@ class CameraClick(BoxLayout):
             height, width = camtexture.height, camtexture.width
             frame = np.frombuffer(camtexture.pixels, np.uint8)
             frame = frame.reshape(height, width, 4)
+
+            #"""
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            org = (50, 50)
+            fontScale = 1
+            color = (255, 0, 0)
+            thickness = 2
+            frame = cv2.putText(frame, 'OpenCV', org, font, 
+                   fontScale, color, thickness, cv2.LINE_AA)
+            #"""
+            
             buf = cv2.flip(frame, -1)
             buf = buf.tobytes()
             texture = Texture.create(size=(frame.shape[1], frame.shape[0])) 
             if (self.code_state / 2) % 6 == 0:
-                texture.blit_buffer(buf, colorfmt='rgb')
-            if (self.code_state / 2) % 6 == 1:
-                texture.blit_buffer(buf, colorfmt='bgr')
-            if (self.code_state / 2) % 6 == 2:
                 texture.blit_buffer(buf, colorfmt='rgba')
-            if (self.code_state / 2) % 6 == 3:
+            if (self.code_state / 2) % 6 == 1:
                 texture.blit_buffer(buf, colorfmt='bgra')
+            if (self.code_state / 2) % 6 == 2:
+                texture.blit_buffer(buf, colorfmt='rgb')
+            if (self.code_state / 2) % 6 == 3:
+                texture.blit_buffer(buf, colorfmt='bgr')
             if (self.code_state / 2) % 6 == 4:
                 texture.blit_buffer(buf, colorfmt=camtexture.colorfmt)
             if (self.code_state / 2) % 6 == 5:
@@ -89,7 +100,6 @@ class CameraClick(BoxLayout):
                 texture.blit_buffer(buf, colorfmt='rgba')
             if (self.code_state // 2) % 4 == 3:
                 texture.blit_buffer(buf, colorfmt='bgra')
-            #texture.blit_buffer(buf, colorfmt='bgr')
 
         #texture = camtexture
         self.ids['image'].texture = texture
