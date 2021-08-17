@@ -1,6 +1,8 @@
-name: GitHub Actions Build
+name: Build_Python
 on: 
   push:
+    paths-ignore:
+      - 'examples/**'
     branches: 
       [ builder ]
 jobs:
