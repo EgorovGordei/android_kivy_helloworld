@@ -38,17 +38,18 @@ mainkv = """
         height: '48dp'
         on_press: root.capture()
     Button:
-        text: 'Change image state'
-        on_press: root.change_image_state()
+        id: button_change_code_state
+        text: 'Change code state'
+        on_press: root.change_code_state()
     Image:
         id: image
 """
 
 
 class CameraClick(BoxLayout):
-    image_state = 0
+    code_state = 0
     def capture(self):
-        if self.image_state % 2 == 0:
+        if self.code_state % 2 == 0:
             camera = self.ids['camera']
             timestr = time.strftime("%Y%m%d_%H%M%S")
             camtexture = camera.texture
@@ -56,22 +57,38 @@ class CameraClick(BoxLayout):
             height, width = camtexture.height, camtexture.width
             frame = np.frombuffer(camtexture.pixels, np.uint8)
             frame = frame.reshape(height, width, 4)
-            buf1 = cv2.flip(frame, 0)
-            buf = buf1.tobytes()
+            buf = cv2.flip(frame, -1)
+            buf = buf.tobytes()
             texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr') 
-            texture.blit_buffer(buf, colorfmt='bgr')
+            if (self.code_state / 2) % 4 == 0:
+                texture.blit_buffer(buf, colorfmt='rgb')
+            if (self.code_state / 2) % 4 == 1:
+                texture.blit_buffer(buf, colorfmt='bgr')
+            if (self.code_state / 2) % 4 == 2:
+                texture.blit_buffer(buf, colorfmt='rgba')
+            if (self.code_state / 2) % 4 == 3:
+                texture.blit_buffer(buf, colorfmt='bgra')
 
-        if self.image_state % 2 == 1:
+        if self.code_state % 2 == 1:
             height = 100
             width = 100
             texture = Texture.create(size=(height, width))
             size = height * width * 3
-            buf = [int(x * 255 / size) for x in range(size)]
+            buf = [int(64 + x * 127 / size) for x in range(size)]
             for i in range(height):
                 buf[3*(i*width+i)] = 1000
             buf = ''.join(map(chr, buf)).encode('utf-8')
+            if (self.code_state // 2) % 4 == 0:
+                texture.blit_buffer(buf, colorfmt='rgb')
+            if (self.code_state // 2) % 4 == 1:
+                texture.blit_buffer(buf, colorfmt='bgr')
+            if (self.code_state // 2) % 4 == 2:
+                texture.blit_buffer(buf, colorfmt='rgba')
+            if (self.code_state // 2) % 4 == 3:
+                texture.blit_buffer(buf, colorfmt='bgra')
             texture.blit_buffer(buf, colorfmt='bgr')
-        
+
+        #texture = camtexture
         self.ids['image'].texture = texture
         """
         height, width = camera.texture.height, camera.texture.width
@@ -87,8 +104,9 @@ class CameraClick(BoxLayout):
         texture1.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
         self.ids['image'].texture = texture1
         """
-    def change_image_state(self):
-        self.image_state += 1
+    def change_code_state(self):
+        self.code_state += 1
+        self.ids["button_change_code_state"].text = str(self.code_state)
 
 
 class TestCamera(MDApp):
