@@ -59,15 +59,17 @@ class CameraClick(BoxLayout):
             frame = frame.reshape(height, width, 4)
             buf = cv2.flip(frame, -1)
             buf = buf.tobytes()
-            texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr') 
-            if (self.code_state / 2) % 4 == 0:
+            texture = Texture.create(size=(frame.shape[1], frame.shape[0])) 
+            if (self.code_state / 2) % 5 == 0:
                 texture.blit_buffer(buf, colorfmt='rgb')
-            if (self.code_state / 2) % 4 == 1:
+            if (self.code_state / 2) % 5 == 1:
                 texture.blit_buffer(buf, colorfmt='bgr')
-            if (self.code_state / 2) % 4 == 2:
+            if (self.code_state / 2) % 5 == 2:
                 texture.blit_buffer(buf, colorfmt='rgba')
-            if (self.code_state / 2) % 4 == 3:
+            if (self.code_state / 2) % 5 == 3:
                 texture.blit_buffer(buf, colorfmt='bgra')
+            if (self.code_state / 2) % 5 == 4:
+                texture.blit_buffer(buf, colorfmt=camtexture.colorfmt)
 
         if self.code_state % 2 == 1:
             height = 100
@@ -76,8 +78,8 @@ class CameraClick(BoxLayout):
             size = height * width * 3
             buf = [int(64 + x * 127 / size) for x in range(size)]
             for i in range(height):
-                buf[3*(i*width+i)] = 1000
-            buf = ''.join(map(chr, buf)).encode('utf-8')
+                buf[3*(i*width+i)] = 0
+            buf = bytes(buf)
             if (self.code_state // 2) % 4 == 0:
                 texture.blit_buffer(buf, colorfmt='rgb')
             if (self.code_state // 2) % 4 == 1:
@@ -86,24 +88,11 @@ class CameraClick(BoxLayout):
                 texture.blit_buffer(buf, colorfmt='rgba')
             if (self.code_state // 2) % 4 == 3:
                 texture.blit_buffer(buf, colorfmt='bgra')
-            texture.blit_buffer(buf, colorfmt='bgr')
+            #texture.blit_buffer(buf, colorfmt='bgr')
 
         #texture = camtexture
         self.ids['image'].texture = texture
-        """
-        height, width = camera.texture.height, camera.texture.width
-        newvalue = np.frombuffer(camera.texture.pixels, np.uint8)
-        newvalue = newvalue.reshape(height, width, 4)
-        gray = cv2.cvtColor(newvalue, cv2.COLOR_RGBA2GRAY)
 
-        buf1 = cv2.flip(gray, 0)
-        buf = buf1.tobytes()
-        texture1 = Texture.create(size=(gray.shape[1], gray.shape[0]), colorfmt='bgr') 
-
-        #if working on RASPBERRY PI, use colorfmt='rgba' here instead, but stick with "bgr" in blit_buffer. 
-        texture1.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
-        self.ids['image'].texture = texture1
-        """
     def change_code_state(self):
         self.code_state += 1
         self.ids["button_change_code_state"].text = str(self.code_state)
