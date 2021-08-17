@@ -3,6 +3,7 @@ on:
   push:
     paths-ignore:
       - 'examples/**'
+      - 'Readme.md'
     branches: 
       [ builder ]
 jobs:
