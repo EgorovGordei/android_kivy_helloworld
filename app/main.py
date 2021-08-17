@@ -20,6 +20,9 @@ import numpy as np
 import cv2
 
 
+import imutils
+
+
 mainkv = """
 <CameraClick>:
     orientation: 'vertical'
@@ -60,11 +63,41 @@ class CameraClick(BoxLayout):
             #"""
             font = cv2.FONT_HERSHEY_SIMPLEX
             org = (50, 50)
-            fontScale = 2
+            fontScale = 1
             color = (255, 0, 0)
             thickness = 2
             cv2.putText(frame, 'OpenCV', org, font, 
                    fontScale, color, thickness, cv2.LINE_AA)
+            if self.code_state == 0:
+                buf = cv2.flip(frame, -1)
+                buf = buf.tobytes()
+                texture = Texture.create(size=(frame.shape[1], frame.shape[0]))
+                texture.blit_buffer(buf, colorfmt='rgba')
+                self.ids['image'].texture = texture
+                return
+
+            greenLower = (29, 86, 6)
+            greenUpper = (64, 255, 255)
+            blurred = cv2.GaussianBlur(frame, (11, 11), 0)
+            hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
+            mask = cv2.inRange(hsv, greenLower, greenUpper)
+            mask = cv2.erode(mask, None, iterations=2)
+            mask = cv2.dilate(mask, None, iterations=2)
+            # find contours in the mask and initialize the current
+            # (x, y) center of the ball
+            cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
+                                    cv2.CHAIN_APPROX_SIMPLE)
+            cnts = imutils.grab_contours(cnts)
+            center = None
+            if len(cnts) > 0:
+                c = max(cnts, key=cv2.contourArea)
+                ((x, y), radius) = cv2.minEnclosingCircle(c)
+                M = cv2.moments(c)
+                center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
+                if radius > 10:
+                    cv2.circle(frame, (int(x), int(y)), int(radius),
+                               (0, 255, 255), 2)
+                    cv2.circle(frame, center, 5, (0, 0, 255), -1)
             #"""
             
             buf = cv2.flip(frame, -1)
