@@ -60,10 +60,10 @@ class CameraClick(BoxLayout):
             #"""
             font = cv2.FONT_HERSHEY_SIMPLEX
             org = (50, 50)
-            fontScale = 1
+            fontScale = 2
             color = (255, 0, 0)
             thickness = 2
-            frame = cv2.putText(frame, 'OpenCV', org, font, 
+            cv2.putText(frame, 'OpenCV', org, font, 
                    fontScale, color, thickness, cv2.LINE_AA)
             #"""
             
