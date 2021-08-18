@@ -43,7 +43,15 @@ mainkv = """
     Button:
         id: button_change_image_state
         text: 'Image state: 0'
+        size_hint_y: None
+        height: '48dp'
         on_press: root.change_image_state()
+    MDTextField:
+        id: input_colors
+        hint_text: "Input colors"
+        text: "8, 80, 160; 150, 255, 255"
+        mode: "fill"
+        fill_color: 0, 0, 0, .4
     Image:
         id: image
 """
@@ -84,10 +92,20 @@ class CameraClick(BoxLayout):
             self.ids['image'].texture = texture
             return
 
-        #colorLower = (29, 86, 6)
-        #colorUpper = (64, 255, 255)
-        colorLower = (8, 80, 140)
-        colorUpper = (150, 255, 255)
+        try:
+            colors = self.ids["input_colors"].text
+            colors = colors.split("; ")
+            colors[0] = colors[0].split(", ")
+            colors[1] = colors[1].split(", ")
+            colorLower = tuple(map(int, colors[0]))
+            colorUpper = tuple(map(int, colors[1]))
+        except:
+            colorLower = (None, )
+            colorUpper = (None, )
+        if len(colorLower) != 3 or len(colorUpper) != 3:
+            colorLower = (29, 86, 6)
+            colorUpper = (64, 255, 255)
+
         blurred = cv2.GaussianBlur(frame, (11, 11), 0)
         hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(hsv, colorLower, colorUpper)
