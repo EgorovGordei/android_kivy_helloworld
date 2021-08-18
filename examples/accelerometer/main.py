@@ -29,19 +29,19 @@ mainkv = """
     BoxLayout:
         orientation: 'vertical'
 
-        Label:
+        MDLabel:
             id: x_label
             text: 'X: '
 
-        Label:
+        MDLabel:
             id: y_label
             text: 'Y: '
 
-        Label:
+        MDLabel:
             id: z_label
             text: 'Z: '
 
-        Label:
+        MDLabel:
             id: accel_status
             text: ''
 
@@ -90,7 +90,7 @@ class AccelerometerTest(BoxLayout):
             self.ids.z_label.text = "Z: " + str(val[2])
 
 
-class AccelerometerTestApp(App):
+class AccelerometerTestApp(MDApp):
     def build(self):
         Builder.load_string(mainkv)
         return AccelerometerTest()
