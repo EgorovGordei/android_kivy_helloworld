@@ -1,83 +1,95 @@
-from kivy.app import App
-from kivy.clock import Clock
+import kivy
 from kivy.lang import Builder
+from kivy.app import App
+from kivy.properties import StringProperty
+from kivy.clock import mainthread
+from kivy.utils import platform
+from kivymd.app import MDApp
 from kivy.uix.boxlayout import BoxLayout
+import time
+import os
 
-from plyer import stt
+from plyer import gps
+from plyer import camera
+import requests
 
-Builder.load_string('''
-#:import stt plyer.stt
-<SpeechInterface>:
+from kivy.graphics.texture import Texture
+from kivy.clock import Clock
+import numpy as np
+import cv2
+
+import imutils
+
+from plyer import accelerometer
+from plyer import gravity
+
+
+main_kv = '''
+<GravityInterface>:
     orientation: 'vertical'
-    Label:
+    MDLabel:
+        id: x_label
+        text: 'X: '
+    MDLabel:
+        id: y_label
+        text: 'Y: '
+    MDLabel:
+        id: z_label
+        text: 'Z: '
+    MDLabel:
+        id: status
+        text: ''
+    BoxLayout:
         size_hint_y: None
-        height: sp(40)
-        text: 'Is supported: %s' % stt.exist()
-    Label:
-        size_hint_y: None
-        height: sp(40)
-        text: 'Possible Matches'
-    TextInput:
-        id: results
-        hint_text: 'results (auto stop)'
-    TextInput:
-        id: partial
-        hint_text: 'partial results (manual stop)'
-    TextInput:
-        id: errors
-        hint_text: 'errors'
-    Button:
-        id: start_button
-        text: 'Start Listening'
-        on_release: root.start_listening()
-''')
+        height: '48dp'
+        padding: '4dp'
+        ToggleButton:
+            id: toggle_button
+            text: 'Start Gravity Sensor'
+            on_press: root.do_toggle()
+'''
 
 
-class SpeechInterface(BoxLayout):
-    '''Root Widget.'''
+class GravityInterface(BoxLayout):
+    def __init__(self):
+        super().__init__()
+        self.sensorEnabled = False
 
-    def start_listening(self):
-        if stt.listening:
-            self.stop_listening()
-            return
+    def do_toggle(self):
+        try:
+            if not self.sensorEnabled:
+                gravity.enable()
+                Clock.schedule_interval(self.get_gravity, 1 / 20.)
 
-        start_button = self.ids.start_button
-        start_button.text = 'Stop'
+                self.sensorEnabled = True
+                self.ids.toggle_button.text = "Stop Gravity Sensor"
+            else:
+                gravity.disable()
+                Clock.unschedule(self.get_gravity)
 
-        self.ids.results.text = ''
-        self.ids.partial.text = ''
+                self.sensorEnabled = False
+                self.ids.toggle_button.text = "Start Gravity Sensor"
+        except NotImplementedError:
+            import traceback
+            traceback.print_exc()
+            status = "Gravity sensor is not implemented " \
+                     "for your platform"
+            self.ids.status.text = status
 
-        stt.start()
+    def get_gravity(self, dt):
+        val = gravity.gravity
 
-        Clock.schedule_interval(self.check_state, 1 / 5)
-
-    def stop_listening(self):
-        start_button = self.ids.start_button
-        start_button.text = 'Start Listening'
-
-        stt.stop()
-        self.update()
-
-        Clock.unschedule(self.check_state)
-
-    def check_state(self, dt):
-        # if the recognizer service stops, change UI
-        if not stt.listening:
-            self.stop_listening()
-
-    def update(self):
-        self.ids.partial.text = '\n'.join(stt.partial_results)
-        self.ids.results.text = '\n'.join(stt.results)
+        if not val == (None, None, None):
+            self.ids.x_label.text = "X: " + str(val[0])
+            self.ids.y_label.text = "Y: " + str(val[1])
+            self.ids.z_label.text = "Z: " + str(val[2])
 
 
-class SpeechApp(App):
-
+class GravityApp(MDApp):
     def build(self):
-        return SpeechInterface()
-
-    def on_pause(self):
-        return True
+        Builder.load_string(main_kv)
+        return GravityInterface()
 
 
-if __name__ == "__main__":
-    SpeechApp().run()
+if __name__ == '__main__':
+    GravityApp().run()
