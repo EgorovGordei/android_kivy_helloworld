@@ -51,7 +51,16 @@ mainkv = """
 
 class CameraClick(BoxLayout):
     image_state = 0
+    clock_is_ticking = False
+
+    def clock_tick(self, dt):
+        self.capture()
+
     def capture(self):
+        if not self.clock_is_ticking:
+            self.clock_is_ticking = True
+            Clock.schedule_interval(self.clock_tick, 1.0 / 25)
+        
         camera = self.ids['camera']
         camtexture = camera.texture
 
@@ -59,11 +68,11 @@ class CameraClick(BoxLayout):
         frame = np.frombuffer(camtexture.pixels, np.uint8)
         frame = frame.reshape(height, width, 4)
 
-        #"""
+
         font = cv2.FONT_HERSHEY_SIMPLEX
         org = (50, 50)
         fontScale = 1
-        color = (255, 0, 0)
+        color = (0, 0, 0)
         thickness = 2
         cv2.putText(frame, 'OpenCV', org, font, 
                     fontScale, color, thickness, cv2.LINE_AA)
@@ -75,15 +84,15 @@ class CameraClick(BoxLayout):
             self.ids['image'].texture = texture
             return
 
-        greenLower = (29, 86, 6)
-        greenUpper = (64, 255, 255)
+        #colorLower = (29, 86, 6)
+        #colorUpper = (64, 255, 255)
+        colorLower = (8, 80, 140)
+        colorUpper = (150, 255, 255)
         blurred = cv2.GaussianBlur(frame, (11, 11), 0)
         hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(hsv, greenLower, greenUpper)
+        mask = cv2.inRange(hsv, colorLower, colorUpper)
         mask = cv2.erode(mask, None, iterations=2)
         mask = cv2.dilate(mask, None, iterations=2)
-        # find contours in the mask and initialize the current
-        # (x, y) center of the ball
         cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
                                 cv2.CHAIN_APPROX_SIMPLE)
         cnts = imutils.grab_contours(cnts)
@@ -97,26 +106,27 @@ class CameraClick(BoxLayout):
                 cv2.circle(frame, (int(x), int(y)), int(radius),
                            (0, 255, 255), 2)
                 cv2.circle(frame, center, 5, (0, 0, 255), -1)
-        #"""
+
             
         buf = cv2.flip(frame, -1)
         buf = buf.tobytes()
-        texture = Texture.create(size=(frame.shape[1], frame.shape[0])) 
-        if self.image_state % 7 == 1:
-            texture.blit_buffer(buf, colorfmt='rgba')
-        if self.image_state % 7 == 2:
-            texture.blit_buffer(buf, colorfmt='bgra')
-        if self.image_state % 7 == 3:
-            texture.blit_buffer(buf, colorfmt='rgb')
-        if self.image_state % 7 == 4:
-            texture.blit_buffer(buf, colorfmt='bgr')
-        if self.image_state % 7 == 5:
-            texture.blit_buffer(buf, colorfmt=camtexture.colorfmt)
-        if self.image_state % 7 == 6:
-            texture = camtexture
-
-        #texture = camtexture
-        self.ids['image'].texture = texture
+        texture = Texture.create(size=(frame.shape[1], frame.shape[0]))
+        try:
+            if self.image_state % 7 == 1:
+                texture.blit_buffer(buf, colorfmt='rgba')
+            if self.image_state % 7 == 2:
+                texture.blit_buffer(buf, colorfmt='bgra')
+            if self.image_state % 7 == 3:
+                texture.blit_buffer(buf, colorfmt='rgb')
+            if self.image_state % 7 == 4:
+                texture.blit_buffer(buf, colorfmt='bgr')
+            if self.image_state % 7 == 5:
+                texture.blit_buffer(buf, colorfmt=camtexture.colorfmt)
+            if self.image_state % 7 == 6:
+                texture = camtexture
+            self.ids['image'].texture = texture
+        except:
+            pass
 
     def change_image_state(self):
         self.image_state += 1
