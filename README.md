@@ -1,4 +1,4 @@
-#Python (Kivy) app -> Android APK
+# Python (Kivy) app -> Android APK
 
 Choose any project from examples/ or your own
 
@@ -13,3 +13,7 @@ Change actions.yml file if needed
 -TODO: IOS app
 
 -TODO: 3D graphics
+
+-TODO: speech recognition
+
+-TODO: mediapipe pose detection
