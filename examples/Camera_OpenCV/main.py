@@ -49,7 +49,7 @@ mainkv = """
     MDTextField:
         id: input_colors
         hint_text: "Input colors"
-        text: "8, 80, 160; 150, 255, 255"
+        text: "80, 100, 220; 120, 255, 255"
         mode: "fill"
         fill_color: 0, 0, 0, .4
     Image:
