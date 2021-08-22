@@ -59,6 +59,7 @@ jobs:
       - name: SystemProperties
         run: |
              python3 --version
+             getconf LONG_BIT
 
       - name: InstallCython        
         run: |
