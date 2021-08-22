@@ -21,7 +21,7 @@ import cv2
 
 
 import imutils
-###import mediapipe as mp
+import mediapipe as mp
 
 
 mainkv = """
@@ -57,12 +57,12 @@ mainkv = """
         id: image
 """
 
-###mpDraw = mp.solutions.drawing_utils
-###mpPose = mp.solutions.pose
-###pose = mpPose.Pose()
-###mpFaceMesh = mp.solutions.face_mesh
-###faceMesh = mpFaceMesh.FaceMesh(max_num_faces=2)
-###drawSpec = mpDraw.DrawingSpec(thickness=1, circle_radius=2)
+mpDraw = mp.solutions.drawing_utils
+mpPose = mp.solutions.pose
+pose = mpPose.Pose()
+mpFaceMesh = mp.solutions.face_mesh
+faceMesh = mpFaceMesh.FaceMesh(max_num_faces=2)
+drawSpec = mpDraw.DrawingSpec(thickness=1, circle_radius=2)
 
 class CameraClick(BoxLayout):
     image_state = 0
@@ -72,7 +72,7 @@ class CameraClick(BoxLayout):
         self.capture()
 
     def capture(self):
-        ###global mpDraw, mpPose, pose, mpFaceMesh, faceMesh, drawSpec
+        global mpDraw, mpPose, pose, mpFaceMesh, faceMesh, drawSpec
         if not self.clock_is_ticking:
             self.clock_is_ticking = True
             Clock.schedule_interval(self.clock_tick, 1.0 / 25)
@@ -95,7 +95,7 @@ class CameraClick(BoxLayout):
             imgRGB = cv2.cvtColor(frame, cv2.COLOR_BGRA2RGB)
         frame = imgRGB
 
-        """
+        ###"""
         results = pose.process(imgRGB)
         if results.pose_landmarks:
             mpDraw.draw_landmarks(frame, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
