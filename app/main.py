@@ -1,146 +1,157 @@
-from kivy.app import App
+import kivy
 from kivy.lang import Builder
-from kivy.uix.button import Button
-from kivy.uix.label import Label
-from kivy.uix.popup import Popup
+from kivy.app import App
+from kivy.properties import StringProperty
+from kivy.clock import mainthread
+from kivy.utils import platform
+from kivymd.app import MDApp
 from kivy.uix.boxlayout import BoxLayout
-from plyer import wifi
-from functools import partial
+import time
+import os
+
+from plyer import gps
+from plyer import camera
+import requests
+
+from kivy.graphics.texture import Texture
+from kivy.uix.camera import Camera
+from kivy.clock import Clock
+import numpy as np
+import cv2
 
 
-Builder.load_string('''
-<WifiInterface>:
+import imutils
+import mediapipe as mp
+
+
+mainkv = """
+<CameraClick>:
     orientation: 'vertical'
-    padding: '30dp'
-    spacing: '20dp'
-    GridLayout:
-        cols: 2
-        padding: 20
-        spacing: 20
-        size_hint: 1,.4
-        Button:
-            text: "Disconnect"
-            on_release: root.disconnect()
-        TextInput:
-            id: password
-            hint_text: "Password"
-            disabled: True
-    Label:
+    Camera:
+        id: camera
+        resolution: (640, 480)
+        play: False
+    ToggleButton:
+        text: 'Play'
+        on_press: camera.play = not camera.play
         size_hint_y: None
-        height: sp(20)
-        text: 'Wifi enabled: ' + str(root.is_enabled())
-    BoxLayout:
-        orientation: 'horizontal'
-        size_hint_y: 0.3
-        Button:
-            id: wifi_button
-            size_hint_y: None
-            height: sp(35)
-            text: 'Enable Wifi / Start Scanning'
-            on_release: root.start_wifi()
-        Button:
-            id: stop_wifi_button
-            size_hint_y: None
-            height: sp(35)
-            disabled: True
-            text: 'Disable Wifi'
-            on_release: root.stop_wifi()
-    BoxLayout:
-        id: scan_layout
-        orientation: 'vertical'
-        Label:
-            size_hint_x: 1
-            size_hint_y: None
-            valign: 'middle'
-            height: '35dp'
-            text: 'Scan Results'
-''')
+        height: '48dp'
+    Button:
+        text: 'Capture'
+        size_hint_y: None
+        height: '48dp'
+        on_press: root.capture()
+    Button:
+        id: button_change_image_state
+        text: 'Image state: 0'
+        size_hint_y: None
+        height: '48dp'
+        on_press: root.change_image_state()
+    MDTextField:
+        id: input_colors
+        hint_text: "Input colors"
+        text: "80, 100, 220; 120, 255, 255"
+        mode: "fill"
+        fill_color: 0, 0, 0, .4
+    Image:
+        id: image
+"""
+
+mpDraw = mp.solutions.drawing_utils
+mpPose = mp.solutions.pose
+pose = mpPose.Pose()
+mpFaceMesh = mp.solutions.face_mesh
+faceMesh = mpFaceMesh.FaceMesh(max_num_faces=2)
+drawSpec = mpDraw.DrawingSpec(thickness=1, circle_radius=2)
+
+class CameraClick(BoxLayout):
+    image_state = 0
+    clock_is_ticking = False
+
+    def clock_tick(self, dt):
+        self.capture()
+
+    def capture(self):
+        global mpDraw, mpPose, pose, mpFaceMesh, faceMesh, drawSpec
+        if not self.clock_is_ticking:
+            self.clock_is_ticking = True
+            Clock.schedule_interval(self.clock_tick, 1.0 / 25)
+        
+        camera = self.ids['camera']
+        camtexture = camera.texture
+
+        height, width = camtexture.height, camtexture.width
+        frame = np.frombuffer(camtexture.pixels, np.uint8)
+        frame = frame.reshape(height, width, 4)
 
 
-class WifiInterface(BoxLayout):
 
-    param = {}
+        imgRGB = frame
+        if camera.texture.colorfmt == 'bgr':
+            imgRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        if camera.texture.colorfmt == 'rgba':
+            imgRGB = cv2.cvtColor(frame, cv2.COLOR_RGBA2RGB)
+        if camera.texture.colorfmt == 'bgra':
+            imgRGB = cv2.cvtColor(frame, cv2.COLOR_BGRA2RGB)
+        frame = imgRGB
 
-    def _create_popup(self, title, content):
-        return Popup(
-            title=title,
-            content=Label(text=content),
-            size_hint=(.8, 1),
-            auto_dismiss=True
-        )
+        results = pose.process(imgRGB)
+        if results.pose_landmarks:
+            mpDraw.draw_landmarks(frame, results.pose_landmarks, mpPose.POSE_CONNECTIONS)
+            for id, lm in enumerate(results.pose_landmarks.landmark):
+                h, w, c = frame.shape
+                cx, cy = int(lm.x * w), int(lm.y * h)
+                cv2.circle(frame, (cx, cy), 5, (255, 0, 0), cv2.FILLED)
 
-    def start_wifi(self):
-        wifi_button = self.ids['wifi_button']
-        wifi_button.text = 'Showing Scan Results'
-        wifi_button.on_release = self.show_wifi_scans
-        wifi.start_scanning()
-        stop_wifi_button = self.ids['stop_wifi_button']
-        stop_wifi_button.disabled = False
-        text_inpt = self.ids['password']
-        text_inpt.disabled = False
+        results = faceMesh.process(imgRGB)
+        if results.multi_face_landmarks:
+            for faceLms in results.multi_face_landmarks:
+                mpDraw.draw_landmarks(frame, faceLms, mpFaceMesh.FACEMESH_CONTOURS,
+                                      drawSpec,drawSpec)
+            for id,lm in enumerate(faceLms.landmark):
+                ih, iw, ic = frame.shape
+                x,y = int(lm.x*iw), int(lm.y*ih)
+        
+                
 
-    def stop_wifi(self):
-        stop_wifi_button = self.ids['stop_wifi_button']
-        stop_wifi_button.disabled = True
+            
+        buf = cv2.flip(frame, -1)
+        buf = buf.tobytes()
+        texture = Texture.create(size=(frame.shape[1], frame.shape[0]))
+        try:
+            if self.image_state % 7 == 0:
+                texture.blit_buffer(buf, colorfmt='rgb')
+            if self.image_state % 7 == 1:
+                texture.blit_buffer(buf, colorfmt='rgba')
+            if self.image_state % 7 == 2:
+                texture.blit_buffer(buf, colorfmt='bgra')
+            if self.image_state % 7 == 3:
+                texture.blit_buffer(buf, colorfmt='rgb')
+            if self.image_state % 7 == 4:
+                texture.blit_buffer(buf, colorfmt='bgr')
+            if self.image_state % 7 == 5:
+                texture.blit_buffer(buf, colorfmt=camtexture.colorfmt)
+            if self.image_state % 7 == 6:
+                texture = camtexture
+            self.ids['image'].texture = texture
+        except:
+            pass
 
-        wifi_button = self.ids['wifi_button']
-        wifi_button.text = 'Enable Wifi'
-        wifi_button.on_release = self.start_wifi
-
-        wifi.disable()
-        self.ids['scan_layout'].clear_widgets()
-        text_inpt = self.ids['password']
-        text_inpt.disabled = False
-
-    def start_scanning(self):
-        wifi.start_scanning()
-
-    def show_wifi_scans(self):
-        stack = self.ids['scan_layout']
-        stack.clear_widgets()
-        wifi_scans = wifi.names.keys()
-        for name in wifi_scans:
-            content = ""
-            items = wifi._get_network_info(name)
-            for key, value in items.items():
-                content += "{}:    {} \n".format(key, value)
-
-            popup = self._create_popup(name, content)
-            boxl = BoxLayout(orientation='horizontal')
-            button = Button(
-                text=name,
-                size_hint=(1, 1),
-                height='40dp',
-                on_release=popup.open,
-            )
-            button_connect = Button(
-                text="Connect",
-                size_hint_x=.2,
-                on_release=partial(self.connect, name))
-
-            boxl.add_widget(button)
-            boxl.add_widget(button_connect)
-            stack.add_widget(boxl)
-
-    def is_enabled(self):
-        return wifi.is_enabled()
-
-    def disconnect(self):
-        wifi.disconnect()
-
-    def connect(self, network_name, instance):
-        self.param['password'] = self.ids['password'].text
-        wifi.connect(network_name, self.param)
+    def change_image_state(self):
+        self.image_state += 1
+        self.ids["button_change_image_state"].text = 'Image state:' +\
+                                                    str(self.image_state % 7)
 
 
-class WifiApp(App):
-
+class TestCamera(MDApp):
     def build(self):
-        return WifiInterface()
+        if platform == "android":
+            from android.permissions import request_permissions, Permission
+            request_permissions([Permission.CAMERA,
+                                 Permission.WRITE_EXTERNAL_STORAGE,
+                                 Permission.READ_EXTERNAL_STORAGE])
+        Builder.load_string(mainkv)
+        return CameraClick()
 
-    def on_pause(self):
-        return True
 
-
-if __name__ == "__main__":
-    WifiApp().run()
+TestCamera().run()
