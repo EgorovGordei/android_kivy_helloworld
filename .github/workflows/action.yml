@@ -58,9 +58,11 @@ jobs:
       
       - name: SystemProperties
         run: |
-             python3 --version
              getconf LONG_BIT
+             python3 --version
              python3 -c 'import sys;print("%x" % sys.maxsize, sys.maxsize > 2**32)'
+             sudo apt install python3.7
+             python3 --version
 
       - name: InstallCython        
         run: |
