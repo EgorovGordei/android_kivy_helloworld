@@ -62,9 +62,9 @@ jobs:
              python3 --version
              python3 -c 'import sys;print("%x" % sys.maxsize, sys.maxsize > 2**32)'
              echo 'DBG:1'
-             apt update
+             apt-get update
              echo 'DBG:2'
-             sudo apt install software-properties-common
+             sudo apt-get install software-properties-common
              echo 'DBG:3'
              sudo add-apt-repository ppa:deadsnakes/ppa
              echo 'DBG:4'
