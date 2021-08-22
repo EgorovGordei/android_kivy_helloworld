@@ -55,6 +55,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      
+      - name: SystemProperties
+        run: |
+             python3 --version
 
       - name: InstallCython        
         run: |
