@@ -61,7 +61,11 @@ jobs:
              getconf LONG_BIT
              python3 --version
              python3 -c 'import sys;print("%x" % sys.maxsize, sys.maxsize > 2**32)'
+             echo 'DBG:1'
+             python3.7 --version
+             echo 'DBG:2'
              apt update
+             echo 'DBG:3'
              sudo apt install software-properties-common
              sudo add-apt-repository ppa:deadsnakes/ppa
              sudo apt install python3.7
