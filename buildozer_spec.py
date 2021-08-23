@@ -8,7 +8,7 @@ s = s.replace("#android.permissions = INTERNET", "android.permissions = INTERNET
 s = s.replace("requirements = python3,kivy", "requirements = libffi,imutils,opencv,numpy,cffi,python3==3.7.9,hostpython3==3.7.9,kivy==master,kivymd==0.104.2,sdl2_ttf==2.0.15,pillow,requests,urllib3,charset-normalizer,idna,plyer,mediapipe")
 s = s.replace("#p4a.branch = master", "p4a.branch = develop")
 s = s.replace("osx.python_version = 3", "osx.python_version = 3.7.9")
-s = s.replace("android.arch = armeabi-v7a", "android.arch = arm64-v8a")
+s = s.replace("android.arch = armeabi-v7a", "android.arch = x86_64")
 
 s = s.replace("#android.api = 27", "android.api = 30")
 
