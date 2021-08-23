@@ -107,7 +107,7 @@ class CameraClick(BoxLayout):
         results = faceMesh.process(imgRGB)
         if results.multi_face_landmarks:
             for faceLms in results.multi_face_landmarks:
-                mpDraw.draw_landmarks(frame, faceLms, mpFaceMesh.FACEMESH_CONTOURS,
+                mpDraw.draw_landmarks(frame, faceLms, mpFaceMesh.FACE_CONNECTIONS,
                                       drawSpec,drawSpec)
             for id,lm in enumerate(faceLms.landmark):
                 ih, iw, ic = frame.shape
