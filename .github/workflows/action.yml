@@ -108,6 +108,9 @@ jobs:
              sudo apt-get install libsdl2-ttf-dev
              pip3 install imutils
              pip3 install mediapipe
+             pip3 install moviepy
+             pip3 install pafy
+             pip3 install youtube-dl
              
       - name: InstallBuildozer        
         run: |
