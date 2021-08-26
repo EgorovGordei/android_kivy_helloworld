@@ -1,5 +1,6 @@
 import moviepy
-import pafy
+#import pafy
+import pytube
 
 def get_part_of_video():
     pass
