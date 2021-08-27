@@ -8,6 +8,8 @@ Change app/buildozer_spec.py (buildozer config script)
 
 ---
 
+-TODO: check all examples' code and buildozer_spec.py files
+
 -TODO: IOS app
 
 -TODO: 3D graphics
