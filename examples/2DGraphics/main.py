@@ -9,10 +9,6 @@ from kivy.uix.boxlayout import BoxLayout
 import time
 import os
 
-from plyer import gps
-from plyer import camera
-import requests
-
 from kivy.graphics import Mesh, Color
 from kivy.graphics.tesselator import Tesselator, WINDING_ODD, TYPE_POLYGONS
 from kivy.uix.floatlayout import FloatLayout
@@ -141,9 +137,9 @@ class ShapeBuilder(FloatLayout):
         self.canvas.after.clear()
 
 
-class TessApp(MDApp):
+class TestApp(MDApp):
     def build(self):
         return ShapeBuilder()
 
 
-TessApp().run()
+TestApp().run()
