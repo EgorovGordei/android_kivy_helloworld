@@ -36,7 +36,7 @@ jobs:
       - name: ToolchainRecipesInstall
         run: |
              cd app/
-             python3 ../toolchain_recipes.py
+             python3 ../utils/toolchain_recipes.py
       
       - name: CreateApp
         run: |
@@ -83,16 +83,8 @@ jobs:
              pip3 install urllib3
              pip3 install charset-normalizer
              pip3 install idna
-             #pip3 install plyer
-             #pip3 install opencv-python
-             #pip3 install numpy
              sudo apt-get update
              sudo apt-get install libsdl2-ttf-dev
-             pip3 install imutils
-             #pip3 install mediapipe
-             #pip3 install moviepy
-             #pip3 install pafy
-             #pip3 install youtube-dl
              
       - name: InstallBuildozer        
         run: |
@@ -111,7 +103,7 @@ jobs:
         run: |
              cd app
              buildozer init
-             python3 ../buildozer_spec.py
+             python3 buildozer_spec.py
              cat buildozer.spec
 
       - name: Build
