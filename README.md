@@ -4,9 +4,7 @@ Choose any project from examples/ or your own
 
 Copy your project into app/
 
-Change buildozer_spec.py (buildozer config script)
-
-Change actions.yml file if needed
+Change app/buildozer_spec.py (buildozer config script)
 
 ---
 
@@ -16,4 +14,6 @@ Change actions.yml file if needed
 
 -TODO: speech recognition
 
--TODO: mediapipe pose detection
+---
+
+- mediapipe is not supported
