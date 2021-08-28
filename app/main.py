@@ -80,7 +80,7 @@ class CameraClick(BoxLayout):
         
         camera = self.ids['camera']
         camtexture = camera.texture
-
+        """
         height, width = camtexture.height, camtexture.width
         frame = np.frombuffer(camtexture.pixels, np.uint8)
         frame = frame.reshape(height, width, 4)
@@ -133,7 +133,7 @@ class CameraClick(BoxLayout):
                 cv2.circle(frame, (int(x), int(y)), int(radius),
                            (0, 255, 255), 2)
                 cv2.circle(frame, center, 5, (0, 0, 255), -1)
-        
+        #"""
         frame = VIDEO.get_sound_and_frame(self.time_in_seconds);
 
             
