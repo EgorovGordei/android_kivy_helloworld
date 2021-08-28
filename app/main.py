@@ -23,6 +23,11 @@ import cv2
 import imutils
 
 
+from videos import VideoFromYoutubeURL
+link = "https://www.youtube.com/watch?v=4JkKGNFtmpQ"
+VIDEO = VideoFromYoutubeURL(link)
+
+
 mainkv = """
 <CameraClick>:
     orientation: 'vertical'
@@ -60,11 +65,15 @@ mainkv = """
 class CameraClick(BoxLayout):
     image_state = 0
     clock_is_ticking = False
+    time_in_seconds = 0
 
     def clock_tick(self, dt):
+        self.time_in_seconds += 0.1
         self.capture()
 
     def capture(self):
+        global VIDEO
+        
         if not self.clock_is_ticking:
             self.clock_is_ticking = True
             Clock.schedule_interval(self.clock_tick, 1.0 / 25)
@@ -124,6 +133,8 @@ class CameraClick(BoxLayout):
                 cv2.circle(frame, (int(x), int(y)), int(radius),
                            (0, 255, 255), 2)
                 cv2.circle(frame, center, 5, (0, 0, 255), -1)
+        
+        VIDEO.get_sound_and_frame(self.time_in_seconds);
 
             
         buf = cv2.flip(frame, -1)
