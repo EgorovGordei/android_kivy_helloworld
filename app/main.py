@@ -4,6 +4,9 @@ from kivy.uix.widget import Widget
 from kivy.graphics import Rectangle, Color
 from kivymd.app import MDApp
 
+from moviepy.editor import VideoFileClip
+link = "https://www.youtube.com/watch?v=4JkKGNFtmpQ"
+v = VideoFileClip(link)
 
 class CanvasWidget(Widget):
     def __init__(self, **kwargs):
