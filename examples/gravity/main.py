@@ -15,8 +15,6 @@ import requests
 
 from kivy.graphics.texture import Texture
 from kivy.clock import Clock
-import numpy as np
-import cv2
 
 import imutils
 
