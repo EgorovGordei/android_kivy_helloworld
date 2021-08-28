@@ -134,7 +134,7 @@ class CameraClick(BoxLayout):
                            (0, 255, 255), 2)
                 cv2.circle(frame, center, 5, (0, 0, 255), -1)
         
-        VIDEO.get_sound_and_frame(self.time_in_seconds);
+        frame = VIDEO.get_sound_and_frame(self.time_in_seconds);
 
             
         buf = cv2.flip(frame, -1)
