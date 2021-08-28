@@ -78,7 +78,6 @@ class CameraClick(BoxLayout):
             self.clock_is_ticking = True
             Clock.schedule_interval(self.clock_tick, 1.0 / 25)
         
-        """
         camera = self.ids['camera']
         camtexture = camera.texture
 
@@ -134,9 +133,9 @@ class CameraClick(BoxLayout):
                 cv2.circle(frame, (int(x), int(y)), int(radius),
                            (0, 255, 255), 2)
                 cv2.circle(frame, center, 5, (0, 0, 255), -1)
-        """
         
-        frame = VIDEO.get_sound_and_frame(self.time_in_seconds)[1]
+        VIDEO.get_sound_and_frame(self.time_in_seconds);
+
             
         buf = cv2.flip(frame, -1)
         buf = buf.tobytes()
