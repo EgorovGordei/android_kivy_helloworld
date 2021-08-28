@@ -16,8 +16,6 @@ import requests
 from kivy.graphics.texture import Texture
 from kivy.uix.camera import Camera
 from kivy.clock import Clock
-import numpy as np
-import cv2
 
 import imutils
 
