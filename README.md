@@ -8,7 +8,7 @@ Change app/buildozer_spec.py (buildozer config script)
 
 ---
 
--TODO: check all examples' code and buildozer_spec.py files
+-TODO: clena all examples' code and buildozer_spec.py files from excess dependencies
 
 -TODO: IOS app
 
