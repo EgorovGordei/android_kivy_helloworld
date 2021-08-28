@@ -80,7 +80,7 @@ class CameraClick(BoxLayout):
         
         camera = self.ids['camera']
         camtexture = camera.texture
-        """
+        #"""
         height, width = camtexture.height, camtexture.width
         frame = np.frombuffer(camtexture.pixels, np.uint8)
         frame = frame.reshape(height, width, 4)
