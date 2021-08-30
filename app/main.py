@@ -10,6 +10,7 @@ FPS = 60
 
 class CanvasWidget(Widget):
     rect_movement_line = []
+    rects = []
 
     def __init__(self, **kwargs):
         global FPS
@@ -43,12 +44,22 @@ class CanvasWidget(Widget):
             self.rect_movement_line = self.rect_movement_line[1:]
 
     def on_touch_down(self, touch):
-        #self.rect2.pos = touch.pos
+        self.rect2.size = (self.width, self.height)
+
         x = self.rect2.pos[0]
         y = self.rect2.pos[1]
         if self.rect_movement_line != []:
             x = self.rect_movement_line[-1][0]
             y = self.rect_movement_line[-1][1]
+        
+        with self.canvas:
+            self.pos[0] += touch.x
+            self.pos[1] += touch.y
+            self.rects.append(Rectangle(source ="Egypt_human_torches.png",
+                                pos = self.pos, size = (150, 150)))
+            self.pos[0] -= touch.x
+            self.pos[1] -= touch.y
+
         dx = (touch.x - x) / 100.0
         dy = (touch.y - y) / 100.0
         for i in range(100):
